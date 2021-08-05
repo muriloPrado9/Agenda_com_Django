@@ -5,14 +5,21 @@
     <title>Agenda</title>
 </head>
 <body>
+<div align="center">
     <h1>Login</h1>
+</div>
     <form action="submit" method="POST"> {% csrf_token %}
         <div align="center">
             <label>Usuário: </label>
+            <br>
             <input type="text" name="username">
+            <br>
             <label>Password: </label>
+            <br>
             <input type="password" name="password">
+            <br>
             <button type="submit">Entrar</button>
+            <br>
         </div>
     </form>
 
