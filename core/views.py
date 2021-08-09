@@ -38,7 +38,11 @@ def lista_eventos(request):
 
 @login_required(login_url='/login/')
 def evento(request):
-    return render(request, 'evento.html')
+    id_evento = request.GET.get('id')
+    dados = {}
+    if id_evento:
+        dados['evento'] = Evento.objects.get(id=id_evento)
+    return render(request, 'evento.html', dados)
 
 
 @login_required(login_url='/login/')
@@ -49,10 +53,34 @@ def submit_evento(request):
         local_evento = request.POST.get('local_evento')
         descricao = request.POST.get('drecricao')
         usuario = request.user
-        Evento.objects.create(titulo=titulo,
-                              data_evento=data_evento,
-                              local_evento=local_evento,
-                              drecricao=descricao,
-                              usuarios=usuario)
+        id_evento = request.POST.get('id_evento')
+        if id_evento:
+            Evento.objects.get(id=id_evento)
+            if evento.usuario == usuario:
+                evento.titulo = titulo
+                evento.data_evento = data_evento
+                evento.local_evento = local_evento
+                evento.drecricao = descricao
+                evento.save()
+            # Evento.objects.filter(id=id_evento).update(titulo=titulo,
+            #                                          data_evento=data_evento,
+            #                                          local_evento=local_evento,
+            #                                          drecricao=descricao)
+        else:
+            Evento.objects.create(titulo=titulo,
+                                  data_evento=data_evento,
+                                  local_evento=local_evento,
+                                  drecricao=descricao,
+                                  usuarios=usuario)
         # return redirect('/')
+    return redirect('/')
+
+
+@login_required(login_url='/login/')
+def delete_evento(request, id_evento):
+    usuario = request.user
+    evento = Evento.objects.get(id=id_evento)
+
+    if usuario == evento.usuarios:
+        evento.delete()
     return redirect('/')
